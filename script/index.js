@@ -22,7 +22,7 @@ function updateProgress() {
 const img = new Image();
 img.onload = updateProgress;
 img.onerror = updateProgress;
-img.src = "./img/sia.jpg";
+img.src = "./img/desire.jpg";
 
 // Preload audio
 const audio = document.getElementById("bgMusic");
@@ -38,14 +38,31 @@ const timelineContainer = document.getElementById("timelineContainer");
 const musicControl = document.getElementById("musicControl");
 const musicIcon = document.getElementById("musicIcon");
 const bgMusic = audio;
-const blowInstruction = document.getElementById("blowInstruction");
-const blownMessage = document.getElementById("blownMessage");
-const cakeElement = document.getElementById("cake");
 
 let musicPlaying = false;
-let candlesBlown = false;
-let candles = [];
-let audioContext, analyser, microphone;
+let tl = null;
+
+const iconVolumeOn = `
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4 10v4h4l5 4V6l-5 4z" />
+    <path d="M16 8.5a5 5 0 0 1 0 7" />
+    <path d="M18.5 6a8.5 8.5 0 0 1 0 12" />
+  </svg>
+`;
+
+const iconVolumeOff = `
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4 10v4h4l5 4V6l-5 4z" />
+    <path d="M18 9l-5 6" />
+    <path d="M13 9l5 6" />
+  </svg>
+`;
+
+function setMusicIcon(isPlaying) {
+  musicIcon.innerHTML = isPlaying ? iconVolumeOn : iconVolumeOff;
+}
+
+setMusicIcon(false);
 
 // Card flip animation
 card.addEventListener("click", function () {
@@ -69,7 +86,7 @@ openBtn.addEventListener("click", function (e) {
       .play()
       .then(() => {
         musicPlaying = true;
-        musicIcon.textContent = "🔊";
+        setMusicIcon(true);
       })
       .catch(() => {
         console.log("Music autoplay prevented");
@@ -86,37 +103,14 @@ openBtn.addEventListener("click", function (e) {
 musicControl.addEventListener("click", function () {
   if (musicPlaying) {
     bgMusic.pause();
-    musicIcon.textContent = "🔇";
+    setMusicIcon(false);
     musicPlaying = false;
   } else {
     bgMusic.play();
-    musicIcon.textContent = "🔊";
+    setMusicIcon(true);
     musicPlaying = true;
   }
 });
-
-// Create candles on cake
-function createCandles() {
-  const positions = [
-    { left: 80, top: -20 },
-    { left: 125, top: -20 },
-    { left: 170, top: -20 },
-  ];
-
-  positions.forEach((pos) => {
-    const candle = document.createElement("div");
-    candle.className = "candle";
-    candle.style.left = pos.left + "px";
-    candle.style.top = pos.top + "px";
-
-    const flame = document.createElement("div");
-    flame.className = "flame";
-    candle.appendChild(flame);
-
-    cakeElement.appendChild(candle);
-    candles.push(candle);
-  });
-}
 
 // Main GSAP Animation Timeline
 function animationTimeline() {
@@ -130,9 +124,11 @@ function animationTimeline() {
   }
 
   if (hbd) {
-    hbd.innerHTML = `<span>${hbd.innerHTML
-      .split("")
-      .join("</span><span>")}</span>`;
+    hbd.querySelectorAll(".wish-line").forEach((line) => {
+      line.innerHTML = `<span class="char">${line.textContent
+        .split("")
+        .join('</span><span class="char">')}</span>`;
+    });
   }
 
   const ideaTextTrans = {
@@ -153,9 +149,9 @@ function animationTimeline() {
 
   tl.to(".timeline-container", 0.6, { visibility: "visible" })
     .from(".section-one", 0.7, { opacity: 0, y: 10 })
-    .from(".section-two", 0.4, { opacity: 0, y: 10 })
-    .to(".section-one", 0.7, { opacity: 0, y: 10 }, "+=3")
-    .to(".section-two", 0.7, { opacity: 0, y: 10 }, "-=1")
+    .to(".section-one", 0.7, { opacity: 0, y: 10 }, "+=2.4")
+    .from(".section-two", 0.5, { opacity: 0, y: 10 })
+    .to(".section-two", 0.7, { opacity: 0, y: 10 }, "+=2.1")
     .from(".section-three", 0.7, { opacity: 0, y: 10 })
     .to(".section-three", 0.7, { opacity: 0, y: 10 }, "+=2.5")
     .from(".section-four", 0.7, { scale: 0.2, opacity: 0 })
@@ -165,10 +161,11 @@ function animationTimeline() {
       ".fake-btn",
       0.1,
       {
-        background: "linear-gradient(135deg, #FFD54F 0%, #FF4DA6 100%)",
+        background:
+          "linear-gradient(135deg, oklch(82% 0.14 78) 0%, oklch(70% 0.17 15) 100%)",
         scale: 0.95,
         y: 2,
-        boxShadow: "0 2px 5px rgba(255, 77, 166, 0.4)",
+        boxShadow: "0 2px 5px oklch(54% 0.16 8 / 0.4)",
         ease: "power2.inOut",
       },
       "+=3.5"
@@ -179,7 +176,7 @@ function animationTimeline() {
       {
         scale: 1,
         y: 0,
-        boxShadow: "0 5px 15px rgba(255, 77, 166, 0.4)",
+        boxShadow: "0 5px 15px oklch(54% 0.16 8 / 0.4)",
         ease: "back.out(1.7)",
       },
       "+=0.1"
@@ -193,7 +190,7 @@ function animationTimeline() {
     .to(".idea-3 strong", 0.5, {
       scale: 1.2,
       x: 10,
-      boxShadow: "0 10px 30px rgba(255, 77, 166, 0.5)",
+      boxShadow: "0 10px 30px oklch(54% 0.16 8 / 0.5)",
     })
     .to(".idea-3", 0.7, ideaTextTransLeave, "+=2")
     .from(".idea-4", 0.7, ideaTextTrans)
@@ -247,7 +244,7 @@ function animationTimeline() {
       opacity: 0,
     })
     .staggerFrom(
-      ".wish-hbd span",
+      ".wish-hbd .char",
       0.7,
       {
         opacity: 0,
@@ -258,7 +255,7 @@ function animationTimeline() {
       0.1
     )
     .staggerFromTo(
-      ".wish-hbd span",
+      ".wish-hbd .char",
       0.7,
       {
         scale: 1.4,
@@ -267,7 +264,7 @@ function animationTimeline() {
       {
         scale: 1,
         rotationY: 0,
-        color: "#FF4DA6",
+        color: "oklch(70% 0.17 15)",
       },
       0.1,
       "party"
@@ -283,12 +280,21 @@ function animationTimeline() {
       "party"
     )
     .to(".section-six", 0.5, { opacity: 0, y: 30 }, "+=2")
-    .from(".section-cake", 0.7, { opacity: 0, scale: 0.5 })
-    .add(() => {
-      createCandles();
-      startMicrophoneDetection();
-    })
-    .to(".section-cake", 0.5, { opacity: 0 }, "+=8")
+    .from(".section-eighteen", 0.7, { opacity: 0, scale: 0.88, y: 16 })
+    .from(".eighteen-orbit span", 0.8, {
+      opacity: 0,
+      scale: 0,
+      stagger: 0.035,
+    }, "-=0.2")
+    .from(".eighteen-orbit strong", 0.7, {
+      opacity: 0,
+      scale: 0.65,
+      rotation: -10,
+    }, "-=0.45")
+    .from(".eighteen-kicker", 0.45, { opacity: 0, y: 12 }, "-=0.15")
+    .from(".eighteen-title", 0.55, { opacity: 0, y: 18 }, "-=0.1")
+    .from(".eighteen-copy", 0.55, { opacity: 0, y: 14 }, "-=0.2")
+    .to(".section-eighteen", 0.5, { opacity: 0, y: -20 }, "+=5")
     .to(".section-nine", 0.7, { opacity: 1 })
     .from(".section-nine p", 0.7, {
       opacity: 0,
@@ -299,18 +305,13 @@ function animationTimeline() {
     });
 
   document.getElementById("replay").addEventListener("click", () => {
-    candlesBlown = false;
-    candles.forEach((c) => c.classList.remove("out"));
-    blowInstruction.style.display = "block";
-    blownMessage.classList.remove("show");
-
     // Reset and play music again
     bgMusic.currentTime = 0;
     bgMusic
       .play()
       .then(() => {
         musicPlaying = true;
-        musicIcon.textContent = "🔊";
+        setMusicIcon(true);
       })
       .catch(() => {
         console.log("Music autoplay prevented");
@@ -320,190 +321,18 @@ function animationTimeline() {
   });
 }
 
-// Microphone detection for blowing candles
-let micStream = null;
-let isListening = false;
-let tl = null; // Will store the timeline reference
-
-function stopMicrophoneDetection() {
-  if (micStream) {
-    micStream.getTracks().forEach((track) => track.stop());
-    micStream = null;
-  }
-  if (audioContext) {
-    audioContext.close();
-    audioContext = null;
-  }
-  isListening = false;
-}
-
-// Check if we already have microphone permission
-async function checkMicrophonePermission() {
-  try {
-    const permissions = await navigator.permissions.query({
-      name: "microphone",
-    });
-    return permissions.state === "granted";
-  } catch (err) {
-    return false;
-  }
-}
-
-async function startMicrophoneDetection() {
-  if (candlesBlown || isListening) return;
-
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    setupClickFallback();
-    return;
-  }
-
-  const hasPermission = await checkMicrophonePermission();
-
-  if (hasPermission) {
-    // Already have permission - go straight to detection
-    requestMicPermission();
-  } else {
-    // Need permission - pause everything and show instruction
-    pauseExperience();
-    showPermissionRequest();
-  }
-}
-
-function pauseExperience() {
-  // Pause timeline
-  if (tl && !tl.paused()) {
-    tl.pause();
-  }
-  // Pause music
-  if (musicPlaying) {
-    bgMusic.pause();
-    musicIcon.textContent = "🔇";
-  }
-}
-
-function resumeExperience() {
-  // Resume timeline
-  if (tl && tl.paused()) {
-    tl.resume();
-  }
-  // Resume music
-  if (musicPlaying) {
-    bgMusic.play();
-    musicIcon.textContent = "🔊";
-  }
-}
-
-function showPermissionRequest() {
-  blowInstruction.textContent = "🎤 Click here to enable microphone...";
-  blowInstruction.style.animation = "pulse 2s infinite";
-  blowInstruction.addEventListener("click", requestMicPermission, {
-    once: true,
-  });
-}
-
-function requestMicPermission() {
-  blowInstruction.textContent = "🎤 Requesting microphone access...";
-
-  navigator.mediaDevices
-    .getUserMedia({ audio: true })
-    .then((stream) => {
-      micStream = stream;
-      setupAudioAnalysis(stream);
-      resumeExperience();
-    })
-    .catch((err) => {
-      console.error("Microphone access denied:", err);
-      setupClickFallback();
-      resumeExperience();
-    });
-}
-
-function setupClickFallback() {
-  blowInstruction.textContent = "💡 Click the cake to blow out candles! 💡";
-  blowInstruction.style.animation = "pulse 2s infinite";
-  cakeElement.addEventListener("click", blowCandles, { once: true });
-}
-
-function setupAudioAnalysis(stream) {
-  blowInstruction.textContent =
-    "🌬️ Blow into your mic to blow out the candles! 🌬️";
-  blowInstruction.style.animation = "pulse 2s infinite";
-
-  try {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioContext.createAnalyser();
-    microphone = audioContext.createMediaStreamSource(stream);
-
-    analyser.smoothingTimeConstant = 0.8;
-    analyser.fftSize = 512;
-    microphone.connect(analyser);
-
-    const dataArray = new Uint8Array(analyser.frequencyBinCount);
-    isListening = true;
-
-    function detectBlow() {
-      if (!isListening || candlesBlown) {
-        stopMicrophoneDetection();
-        return;
-      }
-
-      analyser.getByteFrequencyData(dataArray);
-      let sum = 0;
-      for (let i = 0; i < dataArray.length; i++) {
-        sum += dataArray[i];
-      }
-      const average = sum / dataArray.length;
-
-      if (average > 35) {
-        stopMicrophoneDetection();
-        blowCandles();
-        return;
-      }
-
-      requestAnimationFrame(detectBlow);
-    }
-
-    detectBlow();
-  } catch (err) {
-    console.error("Audio setup error:", err);
-    stopMicrophoneDetection();
-    setupClickFallback();
-  }
-}
-
-function blowCandles() {
-  if (candlesBlown) return;
-  candlesBlown = true;
-
-  stopMicrophoneDetection();
-
-  candles.forEach((candle, index) => {
-    setTimeout(() => {
-      candle.classList.add("out");
-    }, index * 200);
-  });
-
-  setTimeout(() => {
-    blowInstruction.style.display = "none";
-    blownMessage.classList.add("show");
-
-    for (let i = 0; i < 6; i++) {
-      setTimeout(() => {
-        const x = Math.random() * window.innerWidth;
-        const y = Math.random() * (window.innerHeight / 2);
-        createFirework(x, y);
-      }, i * 400);
-    }
-  }, 800);
-}
-
 // Balloons effect
 function startBalloons() {
   setInterval(() => {
     const balloon = document.createElement("div");
     balloon.className = "balloon";
-    const balloons = ["🎈", "🎈", "🎈"];
-    balloon.textContent = balloons[Math.floor(Math.random() * balloons.length)];
+    balloon.innerHTML = `
+      <svg viewBox="0 0 48 72" aria-hidden="true">
+        <path class="balloon-body" d="M24 4c10.5 0 18 8.7 18 20.6 0 14.4-10.3 25.6-18 25.6S6 39 6 24.6C6 12.7 13.5 4 24 4z" />
+        <path class="balloon-knot" d="M20 50h8l-4 7z" />
+        <path class="balloon-string" d="M24 57c-6 6 6 8 0 13" />
+      </svg>
+    `;
     balloon.style.left = Math.random() * 100 + "%";
     balloon.style.animationDuration = 12 + Math.random() * 8 + "s";
     balloon.style.animationDelay = Math.random() * 3 + "s";
@@ -514,7 +343,12 @@ function startBalloons() {
 
 // Confetti effect
 function startConfetti() {
-  const colors = ["#FF4DA6", "#FFD54F", "#00E5FF"];
+  const colors = [
+    "oklch(70% 0.17 15)",
+    "oklch(82% 0.14 78)",
+    "oklch(76% 0.095 152)",
+    "oklch(52% 0.14 332)",
+  ];
   setInterval(() => {
     const confetti = document.createElement("div");
     confetti.className = "confetti";
@@ -530,7 +364,12 @@ function startConfetti() {
 
 // Fireworks effect
 function createFirework(x, y) {
-  const colors = ["#FF4DA6", "#FFD54F", "#00E5FF"];
+  const colors = [
+    "oklch(70% 0.17 15)",
+    "oklch(82% 0.14 78)",
+    "oklch(76% 0.095 152)",
+    "oklch(52% 0.14 332)",
+  ];
   for (let i = 0; i < 40; i++) {
     const firework = document.createElement("div");
     firework.className = "firework";
