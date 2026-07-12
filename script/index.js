@@ -64,6 +64,31 @@ function setMusicIcon(isPlaying) {
 
 setMusicIcon(false);
 
+function getReasonItems() {
+  return Array.from(document.querySelectorAll(".reason-line")).map((line) => {
+    const number = line.querySelector("span").textContent;
+    return {
+      number,
+      text: line.textContent.replace(number, "").trim(),
+    };
+  });
+}
+
+function showReasonSpotlight(index, reasonItems) {
+  const number = document.getElementById("reasonNumber");
+  const text = document.getElementById("reasonText");
+  const reason = reasonItems[index];
+
+  if (!number || !text || !reason) return;
+
+  number.textContent = reason.number;
+  text.textContent = reason.text;
+  document.querySelector(".section-reasons")?.style.setProperty(
+    "--reason-progress",
+    `${((index + 1) / reasonItems.length) * 100}%`
+  );
+}
+
 // Card flip animation
 card.addEventListener("click", function () {
   if (!card.classList.contains("opened")) {
@@ -130,6 +155,11 @@ function animationTimeline() {
         .join('</span><span class="char">')}</span>`;
     });
   }
+
+  gsap.set(".section-reasons", { opacity: 0, scale: 0.92, rotationX: 8 });
+  gsap.set(".reason-spotlight", { opacity: 0, y: 24, scale: 0.94 });
+
+  const reasonItems = getReasonItems();
 
   const ideaTextTrans = {
     opacity: 0,
@@ -270,7 +300,7 @@ function animationTimeline() {
       "party"
     )
     .from(
-      ".wish h5",
+      ".wish-prayer",
       0.5,
       {
         opacity: 0,
@@ -295,6 +325,78 @@ function animationTimeline() {
     .from(".eighteen-title", 0.55, { opacity: 0, y: 18 }, "-=0.1")
     .from(".eighteen-copy", 0.55, { opacity: 0, y: 14 }, "-=0.2")
     .to(".section-eighteen", 0.5, { opacity: 0, y: -20 }, "+=5")
+    .call(() => showReasonSpotlight(0, reasonItems))
+    .to(".section-reasons", 0.8, {
+      opacity: 1,
+      scale: 1,
+      rotationX: 0,
+      ease: "power3.out",
+    })
+    .from(".reasons-intro p", 0.45, { opacity: 0, y: 14 }, "-=0.3")
+    .from(".reasons-intro h2", 0.65, { opacity: 0, y: 24 }, "-=0.2")
+    .from(".reasons-core", 0.7, {
+      opacity: 0,
+      scale: 0.72,
+      rotationZ: -8,
+      ease: "power3.out",
+    }, "-=0.25")
+    .from(".reason-line", 1.2, {
+      opacity: 0,
+      scale: 0.6,
+      z: -260,
+      rotationX: 35,
+      stagger: { amount: 1.1, from: "random" },
+      ease: "power3.out",
+    }, "-=0.3");
+
+  tl.addLabel("reasonsRead")
+    .to(".reasons-constellation", 54, {
+      rotationY: 110,
+      rotationX: -5,
+      ease: "none",
+    }, "reasonsRead");
+
+  reasonItems.forEach((reason, index) => {
+    const time = index * 2.9;
+    const lineSelector = `.reason-line:nth-child(${index + 1})`;
+
+    tl.call(() => showReasonSpotlight(index, reasonItems), null, `reasonsRead+=${time}`)
+      .fromTo(".reason-spotlight", 0.55, {
+        opacity: 0,
+        y: 22,
+        scale: 0.96,
+      }, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        ease: "power3.out",
+      }, `reasonsRead+=${time}`)
+      .to(lineSelector, 0.5, {
+        opacity: 1,
+        scale: 1.18,
+        z: 80,
+        ease: "power2.out",
+      }, `reasonsRead+=${time + 0.1}`)
+      .to(lineSelector, 0.65, {
+        opacity: 0.34,
+        scale: 1,
+        z: 0,
+        ease: "power2.inOut",
+      }, `reasonsRead+=${time + 2.15}`);
+  });
+
+  tl.to(".reason-spotlight", 0.65, {
+      opacity: 0,
+      y: -18,
+      scale: 1.04,
+      ease: "power2.in",
+    }, "reasonsRead+=51.2")
+    .to(".section-reasons", 0.9, {
+      opacity: 0,
+      scale: 1.08,
+      z: 180,
+      ease: "power3.in",
+    }, "reasonsRead+=51.85")
     .to(".section-nine", 0.7, { opacity: 1 })
     .from(".section-nine p", 0.7, {
       opacity: 0,

@@ -438,8 +438,15 @@ svg {
 
 /* Birthday Wish Section */
 .section-six {
-  position: relative;
-  top: 3vh;
+  top: clamp(22px, 5dvh, 56px);
+  bottom: 0;
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) minmax(280px, 560px);
+  justify-items: center;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(28px, 6vw, 76px);
+  padding-bottom: max(92px, env(safe-area-inset-bottom));
 }
 
 .portrait-wrap {
@@ -448,8 +455,8 @@ svg {
 }
 
 .profile-picture {
-  width: clamp(220px, 64vw, 350px);
-  height: clamp(220px, 64vw, 350px);
+  width: clamp(210px, 42dvh, 320px);
+  height: clamp(210px, 42dvh, 320px);
   border-radius: 50%;
   object-fit: cover;
   border: 5px solid var(--rose);
@@ -476,13 +483,14 @@ svg {
 }
 
 .wish {
-  margin-top: 15px;
+  margin-top: 0;
+  text-align: left;
 }
 
 .wish-hbd {
-  font-size: clamp(2.35rem, 11vw, 4.2rem);
+  font-size: clamp(2rem, 8dvh, 3.6rem);
   font-family: "Pacifico", cursive;
-  margin: 20px 0;
+  margin: 0 0 clamp(16px, 2.4dvh, 24px);
   text-transform: none;
   color: var(--rose);
   text-shadow: 3px 3px 6px oklch(16% 0.045 338 / 0.28);
@@ -496,13 +504,14 @@ svg {
   display: inline-block;
 }
 
-.wish h5 {
-  font-size: clamp(1rem, 5.2vw, 1.8rem);
+.wish-prayer {
+  font-size: clamp(0.96rem, 2.8dvh, 1.35rem);
   font-weight: 300;
-  margin: 20px 0;
+  line-height: 1.65;
+  margin: 0;
   color: var(--sage);
-  max-width: min(760px, calc(100vw - (var(--page-pad) * 2)));
-  margin-inline: auto;
+  max-width: 48ch;
+  text-wrap: pretty;
 }
 
 /* Eighteen Threshold Section */
@@ -512,9 +521,13 @@ svg {
   right: 0;
   top: clamp(42px, 8svh, 12vh);
   text-align: center;
+  bottom: 0;
   display: grid;
-  justify-items: center;
-  gap: clamp(12px, 3vw, 22px);
+  grid-template-columns: minmax(220px, 330px) minmax(300px, 620px);
+  justify-content: center;
+  align-items: center;
+  gap: clamp(32px, 7vw, 88px);
+  padding-bottom: max(88px, env(safe-area-inset-bottom));
 }
 
 .eighteen-orbit {
@@ -598,6 +611,12 @@ svg {
   max-width: min(520px, calc(100vw - (var(--page-pad) * 2)));
 }
 
+.eighteen-message {
+  display: grid;
+  gap: clamp(12px, 2.4dvh, 22px);
+  text-align: left;
+}
+
 .eighteen-title {
   font-family: "Great Vibes", cursive;
   font-size: clamp(2.25rem, 10vw, 4.25rem);
@@ -612,6 +631,289 @@ svg {
   line-height: 1.75;
   color: var(--text-muted);
   max-width: min(620px, calc(100vw - (var(--page-pad) * 2)));
+  text-wrap: pretty;
+}
+
+/* 18 Reasons Constellation */
+.section-reasons {
+  --reason-progress: 5.555%;
+  inset: 0;
+  top: 0;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  perspective: 1100px;
+  opacity: 0;
+}
+
+.timeline-container > .section-reasons {
+  top: 0;
+  bottom: 0;
+}
+
+.section-reasons::before {
+  content: "";
+  position: absolute;
+  width: min(86vw, 760px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, oklch(70% 0.17 15 / 0.16), transparent 30%),
+    conic-gradient(
+      from 130deg,
+      transparent,
+      oklch(82% 0.14 78 / 0.18),
+      transparent,
+      oklch(76% 0.095 152 / 0.14),
+      transparent
+    );
+  filter: blur(2px);
+  opacity: 0.5;
+  transform: rotateX(72deg);
+  pointer-events: none;
+}
+
+.reasons-intro {
+  position: absolute;
+  top: clamp(40px, 8dvh, 72px);
+  left: var(--page-pad);
+  right: var(--page-pad);
+  text-align: left;
+  z-index: 3;
+}
+
+.reasons-intro p {
+  color: var(--sage);
+  font-size: clamp(0.78rem, 2.6vw, 0.95rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.reasons-intro h2 {
+  color: var(--cream);
+  font-family: "Great Vibes", cursive;
+  font-size: clamp(2.4rem, 9vw, 5rem);
+  font-weight: 700;
+  line-height: 0.95;
+  max-width: 760px;
+  margin-top: 6px;
+  text-shadow: 0 18px 40px var(--shadow-rose);
+}
+
+.reasons-stage {
+  position: relative;
+  width: min(940px, calc(100vw - (var(--page-pad) * 2)));
+  height: min(620px, 72dvh);
+  min-height: 460px;
+  transform-style: preserve-3d;
+  z-index: 2;
+}
+
+.reasons-stage::before,
+.reasons-stage::after {
+  content: "";
+  position: absolute;
+  inset: 12% 18%;
+  border: 1px solid oklch(82% 0.14 78 / 0.16);
+  border-radius: 50%;
+  transform: rotateX(68deg) rotateZ(-8deg);
+  pointer-events: none;
+}
+
+.reasons-stage::after {
+  inset: 20% 10%;
+  border-color: oklch(76% 0.095 152 / 0.14);
+  transform: rotateX(72deg) rotateZ(21deg);
+}
+
+.reasons-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%) translateZ(90px);
+  z-index: 2;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0.2;
+}
+
+.reasons-core span {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(8rem, 26vw, 16rem);
+  line-height: 0.78;
+  color: var(--gold);
+  text-shadow:
+    0 10px 0 oklch(52% 0.14 332 / 0.45),
+    0 34px 80px oklch(16% 0.045 338 / 0.64);
+}
+
+.reasons-core small {
+  color: var(--sage);
+  font-size: clamp(0.72rem, 2.4vw, 0.92rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.reasons-constellation {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+  opacity: 0.58;
+}
+
+.reason-line {
+  --angle: calc(var(--i) * 20deg);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2.5rem;
+  margin: 0;
+  color: transparent;
+  font-size: 0;
+  text-align: center;
+  transform:
+    translate(-50%, -50%)
+    rotateY(var(--angle))
+    translateZ(clamp(210px, 34vw, 370px))
+    translateY(var(--y))
+    rotateY(calc(var(--angle) * -1));
+  transform-style: preserve-3d;
+  opacity: 0.42;
+  will-change: transform, opacity;
+}
+
+.reason-line span {
+  color: var(--gold);
+  display: inline-block;
+  font-family: "Playfair Display", serif;
+  font-size: 0.72rem;
+  margin: 0;
+  opacity: 1;
+}
+
+.reason-line::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -12px;
+  width: 5px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--rose);
+  box-shadow: 0 0 16px var(--rose);
+  opacity: 0.82;
+  transform: translateX(-50%);
+}
+
+.reason-line:nth-child(3n)::before {
+  background: var(--sage);
+  box-shadow: 0 0 16px var(--sage);
+}
+
+.reason-line:nth-child(4n)::before {
+  background: var(--gold);
+  box-shadow: 0 0 16px var(--gold);
+}
+
+.reason-spotlight {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: min(780px, calc(100vw - (var(--page-pad) * 2)));
+  min-height: 220px;
+  transform: translate(-50%, -50%) translateZ(180px);
+  text-align: center;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: clamp(12px, 2.4vw, 22px);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.reason-spotlight::before {
+  top: 0;
+  width: min(520px, 82vw);
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    oklch(16% 0.045 338 / 0.94) 0%,
+    oklch(16% 0.045 338 / 0.76) 52%,
+    transparent 76%
+  );
+  transform: translateX(-50%);
+  z-index: -1;
+}
+
+.reason-count {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--sage);
+  font-family: "Playfair Display", serif;
+  letter-spacing: 0.1em;
+}
+
+.reason-count span:first-child {
+  color: var(--gold);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+}
+
+.reason-count span:last-child {
+  font-size: clamp(0.72rem, 2vw, 0.9rem);
+  opacity: 0.7;
+}
+
+.reason-spotlight > p {
+  margin: 0;
+  color: var(--cream);
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1.16;
+  letter-spacing: 0;
+  text-wrap: balance;
+  max-width: 24ch;
+  text-shadow:
+    0 16px 42px var(--shadow-rose),
+    0 2px 0 oklch(82% 0.14 78 / 0.12);
+}
+
+.reason-spotlight small {
+  color: var(--sage);
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(0.72rem, 2.2vw, 0.9rem);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  opacity: 0.78;
+}
+
+.reason-spotlight::before,
+.reason-spotlight::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.reason-spotlight::after {
+  bottom: 0;
+  width: min(360px, 68vw);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--rose) 0 var(--reason-progress),
+    oklch(82% 0.14 78 / 0.16) var(--reason-progress) 100%
+  );
+  transition: background 420ms cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 @keyframes orbit-breathe {
@@ -872,13 +1174,21 @@ svg {
   }
 
   .section-six,
-  .section-eighteen {
+  .section-eighteen,
+  .section-reasons {
     top: 0;
   }
 
   .section-six {
-    justify-content: flex-start;
-    padding-top: max(7vh, env(safe-area-inset-top));
+    justify-content: center;
+    gap: 8px;
+    padding-top: max(22px, env(safe-area-inset-top));
+    padding-bottom: max(96px, env(safe-area-inset-bottom));
+  }
+
+  .profile-picture {
+    width: min(62vw, 250px, 36dvh);
+    height: min(62vw, 250px, 36dvh);
   }
 
   .hat {
@@ -890,17 +1200,31 @@ svg {
 
   .wish {
     margin-top: 12px;
+    text-align: center;
   }
 
   .wish-hbd {
     max-width: 330px;
+    font-size: clamp(1.9rem, 9vw, 2.85rem);
     line-height: 1.05;
     margin: 14px auto 10px;
+  }
+
+  .wish-prayer {
+    font-size: clamp(0.92rem, 4vw, 1.08rem);
+    line-height: 1.48;
+    max-width: min(340px, calc(100vw - (var(--page-pad) * 2)));
   }
 
   .section-eighteen {
     justify-content: center;
     gap: 12px;
+  }
+
+  .eighteen-message {
+    justify-items: center;
+    gap: 10px;
+    text-align: center;
   }
 
   .eighteen-orbit span {
@@ -909,6 +1233,70 @@ svg {
 
   .eighteen-copy {
     line-height: 1.6;
+  }
+
+  .section-reasons {
+    padding-inline: var(--page-pad);
+    perspective: 780px;
+  }
+
+  .section-reasons::before {
+    width: 120vw;
+    opacity: 0.45;
+  }
+
+  .reasons-intro {
+    top: max(28px, env(safe-area-inset-top));
+    text-align: center;
+  }
+
+  .reasons-intro h2 {
+    max-width: 330px;
+    margin-inline: auto;
+    font-size: clamp(2rem, 8.5vw, 3rem);
+  }
+
+  .reasons-stage {
+    width: 100%;
+    height: 68dvh;
+    min-height: 430px;
+    margin-top: 54px;
+  }
+
+  .reasons-stage::before,
+  .reasons-stage::after {
+    inset: 26% 4%;
+  }
+
+  .reasons-core {
+    transform: translate(-50%, -48%) translateZ(56px);
+  }
+
+  .reasons-core span {
+    font-size: clamp(7rem, 34vw, 11rem);
+  }
+
+  .reason-line {
+    width: 2.5rem;
+    font-size: clamp(0.72rem, 3vw, 0.86rem);
+    transform:
+      translate(-50%, -50%)
+      rotateY(var(--angle))
+      translateZ(clamp(138px, 38vw, 190px))
+      translateY(calc(var(--y) * 0.58))
+      rotateY(calc(var(--angle) * -1));
+  }
+
+  .reason-spotlight {
+    top: 53%;
+    min-height: 250px;
+    transform: translate(-50%, -50%) translateZ(96px);
+  }
+
+  .reason-spotlight p {
+    font-size: clamp(1.75rem, 7.6vw, 2.8rem);
+    line-height: 1.2;
+    max-width: 22ch;
   }
 }
 
@@ -950,6 +1338,13 @@ svg {
 
   .profile-picture {
     border-width: 4px;
+    width: min(58vw, 220px, 34dvh);
+    height: min(58vw, 220px, 34dvh);
+  }
+
+  .wish-prayer {
+    font-size: clamp(0.84rem, 3.65vw, 0.98rem);
+    line-height: 1.42;
   }
 
   .hat {
@@ -959,7 +1354,7 @@ svg {
   }
 
   .eighteen-orbit {
-    width: min(72vw, 250px);
+    width: min(62vw, 218px, 30dvh);
   }
 
   .eighteen-orbit span {
@@ -968,6 +1363,42 @@ svg {
 
   .eighteen-title {
     max-width: 310px;
+    font-size: clamp(2rem, 9vw, 2.7rem);
+  }
+
+  .eighteen-copy {
+    font-size: clamp(0.86rem, 3.7vw, 0.98rem);
+    line-height: 1.45;
+    max-width: 36ch;
+  }
+
+  .reasons-stage {
+    height: 66dvh;
+    min-height: 398px;
+    margin-top: 66px;
+  }
+
+  .reason-line {
+    width: 2.5rem;
+    transform:
+      translate(-50%, -50%)
+      rotateY(var(--angle))
+      translateZ(clamp(112px, 34vw, 150px))
+      translateY(calc(var(--y) * 0.46))
+      rotateY(calc(var(--angle) * -1));
+  }
+
+  .reason-line span {
+    margin-right: 7px;
+  }
+
+  .reason-spotlight {
+    min-height: 230px;
+  }
+
+  .reason-spotlight p {
+    font-size: clamp(1.6rem, 7.2vw, 2.35rem);
+    max-width: 21ch;
   }
 
   .section-nine br {
@@ -1005,8 +1436,8 @@ svg {
   }
 
   .profile-picture {
-    width: 190px;
-    height: 190px;
+    width: min(42vw, 170px, 30dvh);
+    height: min(42vw, 170px, 30dvh);
   }
 
   .hat {
@@ -1019,7 +1450,14 @@ svg {
   }
 
   .wish-hbd {
-    margin: 10px 0;
+    font-size: clamp(1.55rem, 7.5vw, 2.2rem);
+    margin: 8px 0;
+  }
+
+  .wish-prayer {
+    font-size: 0.78rem;
+    line-height: 1.32;
+    max-width: 42ch;
   }
 
   .eighteen-orbit {
@@ -1032,8 +1470,65 @@ svg {
   }
 
   .eighteen-copy {
-    font-size: 0.95rem;
-    line-height: 1.5;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    max-width: 44ch;
+  }
+
+  .eighteen-kicker {
+    font-size: 0.7rem;
+  }
+
+  .eighteen-title {
+    font-size: clamp(1.8rem, 8vw, 2.35rem);
+  }
+
+  .reasons-intro {
+    top: 20px;
+  }
+
+  .reasons-stage {
+    height: 62dvh;
+    min-height: 330px;
+    margin-top: 66px;
+  }
+
+  .reason-line {
+    font-size: 0.68rem;
+    width: 2.5rem;
+    transform:
+      translate(-50%, -50%)
+      rotateY(var(--angle))
+      translateZ(clamp(96px, 30vw, 126px))
+      translateY(calc(var(--y) * 0.34))
+      rotateY(calc(var(--angle) * -1));
+  }
+
+  .reason-spotlight {
+    top: 55%;
+    min-height: 176px;
+  }
+
+  .reason-spotlight p {
+    font-size: clamp(1.4rem, 6.4vw, 2rem);
+    line-height: 1.18;
+    max-width: 22ch;
+  }
+
+  .reason-spotlight small {
+    font-size: 0.66rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reasons-constellation {
+    transform: none !important;
+  }
+
+  .reason-line,
+  .reasons-core,
+  .reason-spotlight {
+    will-change: auto;
   }
 }
 
